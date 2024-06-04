@@ -12,15 +12,15 @@ public class UnitSpawner : NetworkBehaviour, IPointerClickHandler
 
     #region Server
 
-    //public override void OnStartServer()
-    //{
-    //    healthComponent.ServerOnDie += ServerHandleDie;
-    //}
+    public override void OnStartServer()
+    {
+        healthComponent.ServerOnDie += ServerHandleDie;
+    }
 
-    //public override void OnStopServer()
-    //{
-    //    healthComponent.ServerOnDie -= ServerHandleDie;
-    //}
+    public override void OnStopServer()
+    {
+        healthComponent.ServerOnDie -= ServerHandleDie;
+    }
 
     [Command]
     private void CmdSpawnUnit()

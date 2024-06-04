@@ -8,7 +8,7 @@ public class RTSNetworkManager : NetworkManager
 {
     [Space(10)]
     [Header("RTS")]
-    [SerializeField] private GameObject unitSpawnerPrefab;
+    [SerializeField] private GameObject unitBasePrefab;
     [SerializeField] private GameOverHandler gameOverHandlerPrefab;
 
 
@@ -16,7 +16,7 @@ public class RTSNetworkManager : NetworkManager
     {
         base.OnServerAddPlayer(conn);
 
-        GameObject unitSpawnerInstance = Instantiate(unitSpawnerPrefab, conn.identity.transform.position, conn.identity.transform.rotation);
+        GameObject unitSpawnerInstance = Instantiate(unitBasePrefab, conn.identity.transform.position, conn.identity.transform.rotation);
 
         NetworkServer.Spawn(unitSpawnerInstance, conn);
     }

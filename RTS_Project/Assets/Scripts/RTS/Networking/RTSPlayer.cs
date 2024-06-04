@@ -6,11 +6,19 @@ using System;
 
 public class RTSPlayer : NetworkBehaviour
 {
+    [SerializeField] private Building[] buildings = new Building[0];
+
     private List<Unit> myUnits = new List<Unit>();
     private List<Building> myBuildings = new List<Building>();
 
     public List<Unit> MyUnits { get { return myUnits; } }
     public List<Building> MyBuildings { get { return myBuildings; } }
+
+    [SyncVar(hook = nameof(ClientHandleResourcesUpdated))]
+    private int resources = 500;
+    public int Resources { get { return resources; } }
+
+    public event Action<int> ClientOnResourceUpdated;
 
     #region Server
     public override void OnStartServer()
@@ -59,6 +67,27 @@ public class RTSPlayer : NetworkBehaviour
         myBuildings.Remove(building);
     }
 
+    [Command]
+    public void CmdTryPlaceBuilding(int buildingId, Vector3 point)
+    {
+        Building buildingToPlace = null;
+
+        foreach (Building building in buildings)
+        {
+            if (building.Id == buildingId)
+            {
+                buildingToPlace = building;
+                break;
+            }
+        }
+
+        if (buildingToPlace == null) return;
+
+        GameObject buildingInstance = Instantiate(buildingToPlace.gameObject, point, buildingToPlace.transform.rotation);
+
+        NetworkServer.Spawn(buildingInstance, connectionToClient);
+    }
+
     #endregion
 
     #region Client
@@ -69,7 +98,12 @@ public class RTSPlayer : NetworkBehaviour
 
         Unit.AuthorityOnUnitSpawned += AuthorityHandleUnitSpawned;
         Unit.AuthorityOnUnitDespawned += AuthorityHandleUnitDespawned;
+
+        Building.AuthorityOnBuildingSpawned += AuthorityHandleBuildingSpawned;
+        Building.AuthorityOnBuildingDespawned += AuthorityHandleBuildingDespawned;
     }
+
+
 
     public override void OnStopAuthority()
     {
@@ -88,6 +122,22 @@ public class RTSPlayer : NetworkBehaviour
     private void AuthorityHandleUnitDespawned(Unit unit)
     {
         myUnits.Remove(unit);
+    }
+
+    private void AuthorityHandleBuildingSpawned(Building building)
+    {
+        myBuildings.Add(building);
+    }
+
+
+    private void AuthorityHandleBuildingDespawned(Building building)
+    {
+        myBuildings.Remove(building);
+    }
+
+    private void ClientHandleResourcesUpdated(int oldResources, int newResources)
+    {
+        ClientOnResourceUpdated?.Invoke(newResources);
     }
 
     #endregion
