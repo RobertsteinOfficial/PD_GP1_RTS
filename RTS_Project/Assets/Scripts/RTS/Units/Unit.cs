@@ -7,6 +7,10 @@ using UnityEngine.Events;
 
 public class Unit : NetworkBehaviour
 {
+    [Header("Stats")]
+    private int resourceCost = 10;
+    public int ResourceCost { get { return resourceCost; } }
+
     [Header("References")]
     [SerializeField] private UnitMovement unitMovement;
     [SerializeField] private Targeter targeter;
@@ -54,7 +58,7 @@ public class Unit : NetworkBehaviour
         AuthorityOnUnitSpawned?.Invoke(this);
     }
 
-    
+
     public override void OnStopClient()
     {
         if (!isOwned) return;

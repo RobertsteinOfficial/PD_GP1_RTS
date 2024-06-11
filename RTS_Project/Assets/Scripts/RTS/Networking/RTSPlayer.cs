@@ -6,6 +6,8 @@ using System;
 
 public class RTSPlayer : NetworkBehaviour
 {
+    [SerializeField] private LayerMask buildingBlockLayer;
+    [SerializeField] private float buildingRangeLimit = 5f;
     [SerializeField] private Building[] buildings = new Building[0];
 
     private List<Unit> myUnits = new List<Unit>();
@@ -67,6 +69,24 @@ public class RTSPlayer : NetworkBehaviour
         myBuildings.Remove(building);
     }
 
+    public bool CanPlaceBuilding(BoxCollider buildingCollider, Vector3 point)
+    {
+        if (Physics.CheckBox
+            (point + buildingCollider.center, buildingCollider.size / 2, Quaternion.identity, buildingBlockLayer))
+            return false;
+
+        
+        foreach (Building building in myBuildings)
+        {
+            if ((point - building.transform.position).sqrMagnitude <= buildingRangeLimit * buildingRangeLimit)
+            {
+                return true;   
+            }
+        }
+
+        return false;
+    }
+
     [Command]
     public void CmdTryPlaceBuilding(int buildingId, Vector3 point)
     {
@@ -82,10 +102,21 @@ public class RTSPlayer : NetworkBehaviour
         }
 
         if (buildingToPlace == null) return;
+        if (resources < buildingToPlace.Price) return;
+
+        BoxCollider buildingCollider = buildingToPlace.GetComponent<BoxCollider>();
+
+        if (!CanPlaceBuilding(buildingCollider, point)) return;
 
         GameObject buildingInstance = Instantiate(buildingToPlace.gameObject, point, buildingToPlace.transform.rotation);
-
         NetworkServer.Spawn(buildingInstance, connectionToClient);
+        SetResources(resources - buildingToPlace.Price);
+    }
+
+    [Server]
+    public void SetResources(int amount)
+    {
+        resources = amount;
     }
 
     #endregion
@@ -103,8 +134,6 @@ public class RTSPlayer : NetworkBehaviour
         Building.AuthorityOnBuildingDespawned += AuthorityHandleBuildingDespawned;
     }
 
-
-
     public override void OnStopAuthority()
     {
         if (!isClientOnly) return;
@@ -112,7 +141,6 @@ public class RTSPlayer : NetworkBehaviour
         Unit.AuthorityOnUnitSpawned -= AuthorityHandleUnitSpawned;
         Unit.AuthorityOnUnitDespawned -= AuthorityHandleUnitDespawned;
     }
-
 
     private void AuthorityHandleUnitSpawned(Unit unit)
     {
@@ -128,7 +156,6 @@ public class RTSPlayer : NetworkBehaviour
     {
         myBuildings.Add(building);
     }
-
 
     private void AuthorityHandleBuildingDespawned(Building building)
     {
