@@ -9,16 +9,21 @@ public class RTSPlayer : NetworkBehaviour
     [SerializeField] private LayerMask buildingBlockLayer;
     [SerializeField] private float buildingRangeLimit = 5f;
     [SerializeField] private Building[] buildings = new Building[0];
+    [SerializeField] private Transform cameraTransform;
 
     private List<Unit> myUnits = new List<Unit>();
     private List<Building> myBuildings = new List<Building>();
 
     public List<Unit> MyUnits { get { return myUnits; } }
     public List<Building> MyBuildings { get { return myBuildings; } }
+    public Transform CameraTransform { get { return cameraTransform; } }
 
     [SyncVar(hook = nameof(ClientHandleResourcesUpdated))]
     private int resources = 500;
+    private Color teamColour = new Color();
+
     public int Resources { get { return resources; } }
+    public Color TeamColour { get { return teamColour; } }
 
     public event Action<int> ClientOnResourceUpdated;
 
@@ -75,12 +80,12 @@ public class RTSPlayer : NetworkBehaviour
             (point + buildingCollider.center, buildingCollider.size / 2, Quaternion.identity, buildingBlockLayer))
             return false;
 
-        
+
         foreach (Building building in myBuildings)
         {
             if ((point - building.transform.position).sqrMagnitude <= buildingRangeLimit * buildingRangeLimit)
             {
-                return true;   
+                return true;
             }
         }
 
@@ -117,6 +122,12 @@ public class RTSPlayer : NetworkBehaviour
     public void SetResources(int amount)
     {
         resources = amount;
+    }
+
+    [Server]
+    public void SetTeamColour(Color newTeamColour)
+    {
+        teamColour = newTeamColour;
     }
 
     #endregion
