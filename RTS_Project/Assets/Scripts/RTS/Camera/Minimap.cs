@@ -13,13 +13,17 @@ public class Minimap : MonoBehaviour, IPointerDownHandler, IDragHandler
 
     private Transform playerCameraTransform;
 
-    private void Update()
+    private void Start()
     {
-        if (playerCameraTransform != null) return;
-        if (NetworkClient.connection.identity == null) return;
-
         playerCameraTransform = NetworkClient.connection.identity.GetComponent<RTSPlayer>().CameraTransform;
     }
+
+    //private void Update()
+    //{
+    //    if (playerCameraTransform != null) return;
+    //    if (NetworkClient.connection.identity == null) return;
+
+    //}
 
     private void MoveCamera()
     {
