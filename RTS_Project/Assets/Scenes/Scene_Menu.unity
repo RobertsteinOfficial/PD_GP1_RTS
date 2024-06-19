@@ -1192,6 +1192,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   landingPagePanel: {fileID: 1012918375}
+  usingSteam: 1
 --- !u!1 &611869041
 GameObject:
   m_ObjectHideFlags: 0
@@ -1469,6 +1470,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 373561472659112993, guid: 3489602ddfef8244d88428ab7a6ce735, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 373561472659112995, guid: 3489602ddfef8244d88428ab7a6ce735, type: 3}
+      propertyPath: transport
+      value: 
+      objectReference: {fileID: 667152413}
     - target: {fileID: 373561472659112995, guid: 3489602ddfef8244d88428ab7a6ce735, type: 3}
       propertyPath: onlineScene
       value: 
@@ -1560,6 +1569,39 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 373561472659112992, guid: 3489602ddfef8244d88428ab7a6ce735, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 3489602ddfef8244d88428ab7a6ce735, type: 3}
+--- !u!1 &667152411 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 373561472659112999, guid: 3489602ddfef8244d88428ab7a6ce735, type: 3}
+  m_PrefabInstance: {fileID: 667152410}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &667152412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667152411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4f3ab2f09e00a8489ff5e8dd4a57d24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &667152413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 667152411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6e55fca1f4e4844593a3dd65a3ecb39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Channels: 0200000001000000
+  Timeout: 25
+  AllowSteamRelay: 1
+  UseNextGenSteamNetworking: 1
 --- !u!1 &715043362
 GameObject:
   m_ObjectHideFlags: 0
